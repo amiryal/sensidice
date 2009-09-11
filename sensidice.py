@@ -94,25 +94,25 @@ class Digital:
     
     >>> d = Digital('0123456789')
     >>> d(0)
-    '0'
+    ['0']
     >>> d(9)
-    '9'
+    ['9']
     >>> d(10)
-    '1 0'
+    ['1', '0']
     >>> d = Digital('01') + Digital('ab') * Digital('AB')
     >>> d(0)
-    '0'
+    ['0']
     >>> d(1)
-    '1'
+    ['1']
     >>> d(2)
-    'a A'
+    ['a', 'A']
     >>> d(5)
-    'b B'
+    ['b', 'B']
     >>> d(6)
-    '1 0'
+    ['1', '0']
     >>> d = Digital((0, 1)) * Digital(('a', 'b')) * Digital(['A', 'B'])
     >>> d(0)
-    '0 a A'
+    [0, 'a', 'A']
     >>> d = Digital('01') + object()
     ... #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
@@ -137,7 +137,7 @@ class Digital:
             if number < base:
                 break
             number //= base
-        return " ".join([str(d) for d in res])
+        return res
 
     def __add__(self, other):
         if not isinstance(other, Digital):
