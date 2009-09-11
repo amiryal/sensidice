@@ -47,8 +47,8 @@ class DigitSeqCat:
         len1 = len(self.seq1)
         if key < len1:
             return self.seq1[key]
-        len2 = len(self.seq2)
         key -= len1
+        len2 = len(self.seq2)
         if key < len2:
             return self.seq2[key]
         raise IndexError
