@@ -99,7 +99,12 @@ class Digital:
     ['b', 'B']
     >>> d(6)
     ['1', '0']
-    >>> d = Digital('01') + DigitSeqCat("stam", "unrelated class")
+    >>> d = Digital('01') + object()
+    ... #doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+        ...
+    TypeError:
+    >>> d = object() * Digital('01')
     ... #doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
         ...
@@ -130,7 +135,7 @@ class Digital:
         return Digital(DigitSeqCat(self.digits, other.digits))
 
     def __mul__(self, other):
-        if not isinstance(other, type(self)):
+        if not isinstance(other, Digital):
             return NotImplemented
         return Digital(DigitSeqCartes(self.digits, other.digits))
 
