@@ -1,20 +1,29 @@
+# Copyright (c) 2009, Amir Yalon
+# All rights reserved.
+# See license text in COPYRIGHT file.
 """
-sensidice - a module to aid in creating passphrases.
+sensidice: a module to aid in creating sensible passphrases using dice.
 
-In stead of using the original Diceware method, one could use this module in
-conjuction with lists of words of different parts of speech to convert random
+In stead of using the original method (http://diceware.com/), one could use this
+module in conjuction with a large parts-of-speech database to convert random
 numbers to structured sentences.
 
-Copyright (c) 2009, Amir Yalon. All rights reserved.
-
 """
 
 
-def flatprepend(mutable_sequence, items):
-    if isinstance(items, list):
-        mutable_sequence[0:0] = items
+def flatprepend(mutable_sequence, item):
+    
+    """Prepend item to mutable_sequence while keeping it flat.
+
+    If item is a list, then prepend each item from the list in stead of the list
+    itself.
+
+    """
+
+    if isinstance(item, list):
+        mutable_sequence[0:0] = item
     else:
-        mutable_sequence.insert(0, items)
+        mutable_sequence.insert(0, item)
     return mutable_sequence
 
 

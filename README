@@ -1,3 +1,104 @@
-sensidice - a module to aid in creating passphrases.
+sensidice: a module to aid in creating sensible passphrases using dice.
 
-See copyright and license information (2-clause OSI-BSD) in COPYRIGHT file.
+This piece of software is free under the terms of a 2-clause BSD license, which
+is based on (http://opensource.org/licenses/bsd-license.php). For the full
+copyright and license text, see COPYRIGHT file.
+
+The basic usage of this module is hopefully demonstrated well enough by the
+doctests (small examples in the code). What it does, roughly, is create digital
+numeric representations from Python sequences (e.g. lists). One trivial example
+would be creating a hexadecimal representation:
+--8<----
+import sensidice
+d = sensidice.Digital([0,1,2,3,4,5,6,7,8,9,'A','B','C','D','E','F'])
+d(31)
+
+-->8----
+This will simply yield [1, 'F'], which is similar to 1F, the usual hexadecimal
+representation of the number 31.
+
+The module is called "sensidice" because it is supposed to aid in creating a
+"sensible passphrase using dice". While one established method
+(http://diceware.com/) yields just a series of short words chosen out of a list
+only less than 8k words long, using sensidice with a much larger part-of-speech
+database and the same dice throws can yield a sensible sentence.
+
+IMPORTANT: This text does not qualify as advice on security. YOUR PASSPHRASES
+ARE YOUR RESPONSIBILITY. Granted, any constructive feedback is great; thanks!
+
+To demonstrate, we will use the Part of Speech Database from Kevin's Word List
+Page (http://wordlist.sourceforge.net/). We assume that pos/part-of-speech.txt
+is in our working directory.
+
+--8<----
+import re
+import sensidice
+
+POS_FILE='pos/part-of-speech.txt'
+
+pattern = re.compile(r'^(?P<word>.*)\t(?P<flags>.*)$')
+posdata = {
+    'articles': { 'flags': set('DI'), 'items': [] },
+    'nouns': { 'flags': set('NphP'), 'items': [] },
+    'verbs': { 'flags': set('Vti'), 'items': [] },
+    'adverbs': { 'flags': set('v'), 'items': [] },
+    'adjectives': { 'flags': set('A'), 'items': [] },
+    'others': { 'flags': set(), 'items': [] },
+}
+
+with open(POS_FILE) as f:
+    for w in [pattern.match(line).groupdict() for line in f]:
+        (word, flags) = (w['word'], w['flags'])
+        for key in posdata.keys():
+            if posdata[key]['flags'].intersection(flags):
+                posdata[key]['items'].append(word)
+                break
+        else:
+            posdata['others']['items'].append(word)
+
+digitals = {}
+for key in posdata.keys():
+    digitals[key] = sensidice.Digital(posdata[key]['items'])
+
+", ".join(['%(n)s %(digital)s' % {'n': digitals[key].base(), 'digital': key}
+           for key in digitals.keys()])
+
+-->8----
+Running this in an interactive Python session, we get a summary of how many
+words we collected for each part of speech. If we continue with the same
+session, we can start playing with the items in the digitals dictionary:
+--8<----
+verbal_phrase = digitals['adverbs'] * digitals['verbs'] + \
+                digitals['verbs'] * digitals['adverbs']
+
+import math
+math.log(verbal_phrase.base(), 2)
+math.log(verbal_phrase.base(), math.pow(6, 5))
+
+import random
+verbal_phrase(random.randrange(verbal_phrase.base()))
+
+-->8----
+As shown above, using only verbal phrases, almost 30 bits of entropy
+(equivalent to more than 2 throws of 5 dice) can be squeezed into just two
+words. Actually, some of the entries in the Part of Speech database consist of
+more than one word, but you get the general idea.
+
+Adding nouns:
+--8<----
+noun_phrase = digitals['adjectives'] * digitals['nouns']
+phrase = verbal_phrase * noun_phrase + noun_phrase * verbal_phrase
+
+math.log(phrase.base(), 2)
+math.log(phrase.base(), math.pow(6, 5))
+
+phrase(random.randrange(phrase.base()))
+
+-->8----
+Four words are enough to cover the entropy of almost 5 throws of 5 dice.
+
+That is all for now; I hope you find it useful. You are invited to follow the
+project on GitHub (http://github.com/amiryal/sensidice/).
+
+Yours,
+    Amir Yalon <sensidice@amir.eml.cc>
