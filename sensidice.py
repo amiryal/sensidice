@@ -93,6 +93,8 @@ class Digital:
     """A digital place with its own base and list of digits.
     
     >>> d = Digital('0123456789')
+    >>> len(d)
+    10
     >>> d(0)
     ['0']
     >>> d(9)
@@ -128,6 +130,9 @@ class Digital:
 
     def __init__(self, digits):
         self.digits = digits
+
+    def __len__(self):
+        return len(self.digits)
 
     def __call__(self, number):
         res = []
