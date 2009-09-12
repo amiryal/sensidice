@@ -1,7 +1,7 @@
 sensidice: a module to aid in creating sensible passphrases using dice.
 
 This piece of software is free under the terms of a 2-clause BSD license, which
-is based on (http://opensource.org/licenses/bsd-license.php). For the full
+is based on <http://opensource.org/licenses/bsd-license.php>. For the full
 copyright and license text, see COPYRIGHT file.
 
 The basic usage of this module is hopefully demonstrated well enough by the
@@ -19,7 +19,7 @@ representation of the number 31.
 
 The module is called "sensidice" because it is supposed to aid in creating a
 "sensible passphrase using dice". While one established method
-(http://diceware.com/) yields just a series of short words chosen out of a list
+<http://diceware.com/> yields just a series of short words chosen out of a list
 only less than 8k words long, using sensidice with a much larger part-of-speech
 database and the same dice throws can yield a sensible sentence.
 
@@ -27,7 +27,7 @@ IMPORTANT: This text does not qualify as advice on security. YOUR PASSPHRASES
 ARE YOUR RESPONSIBILITY. Granted, any constructive feedback is great; thanks!
 
 To demonstrate, we will use the Part of Speech Database from Kevin's Word List
-Page (http://wordlist.sourceforge.net/). We assume that pos/part-of-speech.txt
+Page <http://wordlist.sourceforge.net/>. We assume that pos/part-of-speech.txt
 is in our working directory.
 
 --8<----
@@ -98,7 +98,7 @@ phrase(random.randrange(phrase.base()))
 Four words are enough to cover the entropy of almost 5 throws of 5 dice.
 
 That is all for now; I hope you find it useful. You are invited to follow the
-project on GitHub (http://github.com/amiryal/sensidice/).
+project on GitHub <http://github.com/amiryal/sensidice>.
 
 Yours,
     Amir Yalon <sensidice@amir.eml.cc>
