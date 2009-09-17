@@ -37,30 +37,29 @@ import sensidice
 POS_FILE='pos/part-of-speech.txt'
 
 pattern = re.compile(r'^(?P<word>.*)\t(?P<flags>.*)$')
-posdata = {
-    'articles': { 'flags': set('DI'), 'items': [] },
-    'nouns': { 'flags': set('NphP'), 'items': [] },
-    'verbs': { 'flags': set('Vti'), 'items': [] },
-    'adverbs': { 'flags': set('v'), 'items': [] },
-    'adjectives': { 'flags': set('A'), 'items': [] },
-    'others': { 'flags': set(), 'items': [] },
-}
+posdata = [
+    { 'pos': 'article',   'flags': set('DI'),   'items': [] },
+    { 'pos': 'adverb',    'flags': set('v'),    'items': [] },
+    { 'pos': 'adjective', 'flags': set('A'),    'items': [] },
+    { 'pos': 'verb',      'flags': set('Vti'),  'items': [] },
+    { 'pos': 'noun',      'flags': set('NphP'), 'items': [] },
+    { 'pos': 'other',     'flags': set(),       'items': [] },
+]
 
 with open(POS_FILE) as f:
     for w in [pattern.match(line).groupdict() for line in f]:
         (word, flags) = (w['word'], w['flags'])
-        for key in posdata.keys():
-            if posdata[key]['flags'].intersection(flags):
-                posdata[key]['items'].append(word)
+        for pos in posdata:
+            if pos['flags'] and pos['flags'].intersection(flags):
+                pos['items'].append(word)
                 break
-        else:
-            posdata['others']['items'].append(word)
 
 digitals = {}
-for key in posdata.keys():
-    digitals[key] = sensidice.Digital(posdata[key]['items'])
+for pos in posdata:
+    key = pos['pos']
+    digitals[key] = sensidice.Digital(pos['items'])
 
-", ".join(['%(n)s %(digital)s' % {'n': digitals[key].base(), 'digital': key}
+"\n".join(['%(n)s %(digital)ss' % {'n': digitals[key].base(), 'digital': key}
            for key in digitals.keys()])
 
 -->8----
@@ -68,12 +67,12 @@ Running this in an interactive Python session, we get a summary of how many
 words we collected for each part of speech. If we continue with the same
 session, we can start playing with the items in the digitals dictionary:
 --8<----
-verbal_phrase = digitals['adverbs'] * digitals['verbs'] + \
-                digitals['verbs'] * digitals['adverbs']
+verbal_phrase = digitals['adverb'] * digitals['verb'] + \
+                digitals['verb'] * digitals['adverb']
 
 import math
 math.log(verbal_phrase.base(), 2)
-math.log(verbal_phrase.base(), math.pow(6, 5))
+math.log(verbal_phrase.base(), 6**5)
 
 import random
 verbal_phrase(random.randrange(verbal_phrase.base()))
@@ -86,16 +85,17 @@ more than one word, but you get the general idea.
 
 Adding nouns:
 --8<----
-noun_phrase = digitals['adjectives'] * digitals['nouns']
+noun_phrase = digitals['adjective'] * digitals['noun']
 phrase = verbal_phrase * noun_phrase + noun_phrase * verbal_phrase
 
 math.log(phrase.base(), 2)
-math.log(phrase.base(), math.pow(6, 5))
+math.log(phrase.base(), 6**5)
 
 phrase(random.randrange(phrase.base()))
 
 -->8----
-Four words are enough to cover the entropy of almost 5 throws of 5 dice.
+We show that four words are enough for the entropy of almost 5 throws of 5
+dice, and we are still far from exhausting the mudule's possibilities.
 
 That is all for now; I hope you find it useful. You are invited to follow the
 project on GitHub <http://github.com/amiryal/sensidice>.
